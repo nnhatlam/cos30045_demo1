@@ -16,10 +16,16 @@ document.addEventListener('DOMContentLoaded', () => { // ensures the html is ful
 
     navLinks.forEach(link => {
         link.addEventListener('click', (event) => {
-            event.preventDefault(); // prevent the default link behavior
-            const targetPageId = link.getAttribute('data-page'); // get the target page id from data-page attribute. Get attribute reads the attribute from html
-            history.pushState({ page: targetPageId}, targetPageId, `#${targetPageId}` );
-            showPage(targetPageId); // show the target page
+            const targetPageId = link.getAttribute('data-page'); // get the target page id from data-page attribute
+            const targetPage = document.getElementById(targetPageId);
+            
+            // Only prevent default and use SPA navigation if the target page exists in current document
+            if (targetPage) {
+                event.preventDefault(); // prevent the default link behavior
+                history.pushState({ page: targetPageId}, targetPageId, `#${targetPageId}` );
+                showPage(targetPageId); // show the target page
+            }
+            // Otherwise, allow normal link navigation to separate HTML files
         });
     });
 
