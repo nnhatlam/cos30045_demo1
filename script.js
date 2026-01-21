@@ -1,17 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => { // ensures the html is fully loaded before using process any actions
     const navLinks = document.querySelectorAll('.nav-link');  // find all the elements that match the css selector .nav-link, like class
     
+    // Function to update active navigation link
+    const updateActiveNav = (pageId) => {
+        // Remove active class from all nav links
+        navLinks.forEach(link => link.classList.remove('active'));
+        
+        // Add active class to the matching nav link
+        const activeLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    };
+    
     const showPage = (pageId) => {
         const currentPage = document.querySelector('.page.active'); // find the current active page
         if (currentPage) {
             currentPage.classList.remove('active'); // hide the current active page
         }
-        const currentNavLink = document.querySelector('.nav-link.active'); // find the current active nav link
-        if (currentNavLink) {
-            currentNavLink.classList.remove('active'); // deactivate the current active nav link
+        const pageElement = document.getElementById(pageId);
+        if (pageElement) {
+            pageElement.classList.add('active'); // show the target page
         }
-        document.getElementById(pageId).classList.add('active'); // show the target page
-        document.querySelector(`.nav-link[data-page="${pageId}"]`).classList.add('active'); // activate the target nav link
+        updateActiveNav(pageId); // update active nav link
     };
 
     navLinks.forEach(link => {
@@ -24,8 +35,10 @@ document.addEventListener('DOMContentLoaded', () => { // ensures the html is ful
                 event.preventDefault(); // prevent the default link behavior
                 history.pushState({ page: targetPageId}, targetPageId, `#${targetPageId}` );
                 showPage(targetPageId); // show the target page
+            } else {
+                // For navigation to separate pages, update active state before navigation
+                updateActiveNav(targetPageId);
             }
-            // Otherwise, allow normal link navigation to separate HTML files
         });
     });
 
@@ -42,5 +55,19 @@ document.addEventListener('DOMContentLoaded', () => { // ensures the html is ful
 
     // Set initial page on load
     const initialPage = window.location.hash ? window.location.hash.substring(1) : 'home';
-    showPage(initialPage);
+    const pageElement = document.getElementById(initialPage);
+    if (pageElement) {
+        showPage(initialPage);
+    } else {
+        // If no page element exists (separate HTML files), just update the nav
+        updateActiveNav(getCurrentPage());
+    }
+    
+    // Helper function to determine current page from URL
+    function getCurrentPage() {
+        const path = window.location.pathname;
+        if (path.includes('televisions.html')) return 'televisions';
+        if (path.includes('about.html')) return 'about';
+        return 'home';
+    }
 });

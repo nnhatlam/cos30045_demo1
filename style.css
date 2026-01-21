@@ -94,11 +94,12 @@ nav a {
     border-radius: 8px;
     transition: all 0.3s ease;
 }
-nav a.active {
+.nav-link.active {
     color: #E2FBCE;
     border-bottom: 3px solid #e2fbce;
     font-weight: 700;
     box-shadow: 0px 10px 10px 0 rgba(226, 251, 206, 0.70);
+    
 }
 nav a:hover {
     background-color: #e2fbce;
